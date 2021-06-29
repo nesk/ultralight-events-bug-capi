@@ -98,6 +98,11 @@ void Init() {
   ///
   ulWindowSetResizeCallback(window, OnResize, 0);
 
+  ULViewConfig viewConfig = ulCreateViewConfig();
+  ulViewConfigSetInitialDeviceScale(viewConfig, ulWindowGetScale(window));
+  ulViewConfigSetIsAccelerated(viewConfig, false);
+  ULView view = ulCreateView(ulAppGetRenderer(app), ulWindowGetWidth(window), ulWindowGetHeight(window), viewConfig, ulCreateSession(ulAppGetRenderer(app), false, ulCreateString("test")));
+
   ///
   /// Create an overlay same size as our window at 0,0 (top-left) origin.
   /// Overlays also create an HTML view for us to display content in.
@@ -106,12 +111,12 @@ void Init() {
   ///     Ownership of the view remains with the overlay since we don't
   ///     explicitly create it.
   ///
-  overlay = ulCreateOverlay(window, ulWindowGetWidth(window), ulWindowGetHeight(window), 0, 0);
-  
+  overlay = ulCreateOverlayWithView(window, view, 0, 0);
+
   ///
   /// Get the overlay's view.
   ///
-  view = ulOverlayGetView(overlay);
+  //view = ulOverlayGetView(overlay);
 
   ///
   /// Register a callback to handle our view's DOMReady event. We will use this
