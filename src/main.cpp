@@ -1,5 +1,6 @@
 #include <AppCore/CAPI.h>
 #include <JavaScriptCore/JavaScript.h>
+#include <Windows.h>
 
 ///
 ///  Welcome to Sample 6!
@@ -43,6 +44,11 @@ void OnResize(void* user_data, ULWindow window, unsigned int width, unsigned int
 /// Forward declaration of our OnDOMReady callback.
 void OnDOMReady(void* user_data, ULView caller, unsigned long long frame_id,
   bool is_main_frame, ULString url);
+
+/// Forward declaration of our OnConsoleMessage callback.
+void OnConsoleMessage(void* user_data, ULView caller, ULMessageSource source,
+    ULMessageLevel level, ULString message, unsigned int line_number,
+    unsigned int column_number, ULString source_id);
 
 ///
 /// We set up our application here.
@@ -112,6 +118,11 @@ void Init() {
   /// event to setup any JavaScript <-> C bindings and initialize our page.
   ///
   ulViewSetDOMReadyCallback(view, OnDOMReady, 0);
+
+  ///
+  /// Register a callback to handle our view's ConsoleMessage event.
+  ///
+  ulViewSetAddConsoleMessageCallback(view, OnConsoleMessage, 0);
 
   ///
   /// Load a file from the FileSystem.
@@ -233,6 +244,15 @@ void OnDOMReady(void* user_data, ULView caller, unsigned long long frame_id,
   /// Unlock the JS context so other threads can modify JavaScript state.
   ///
   ulViewUnlockJSContext(view);
+}
+
+///
+/// This is called when the a console message is logged.
+///
+void OnConsoleMessage(void* user_data, ULView caller, ULMessageSource source,
+    ULMessageLevel level, ULString message, unsigned int line_number,
+    unsigned int column_number, ULString source_id) {
+    OutputDebugStringA("Console message received\n");
 }
 
 ///
